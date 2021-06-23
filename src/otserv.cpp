@@ -124,26 +124,26 @@ void mainLoader(int, char*[], ServiceManager* services)
 	g_game.setGameState(GAME_STATE_STARTUP);
 
 	srand(static_cast<unsigned int>(OTSYS_TIME()));
-#ifdef _WIN32
-	SetConsoleTitle(STATUS_SERVER_NAME);
-#endif
+	#ifdef _WIN32
+		SetConsoleTitle(STATUS_SERVER_NAME);
+	#endif
 	std::cout << STATUS_SERVER_NAME << " - Version " << STATUS_SERVER_VERSION << std::endl;
 	std::cout << "Compiled with " << BOOST_COMPILER << std::endl;
 	std::cout << "Compiled on " << __DATE__ << ' ' << __TIME__ << " for platform ";
 
-#if defined(__amd64__) || defined(_M_X64)
-	std::cout << "x64" << std::endl;
-#elif defined(__i386__) || defined(_M_IX86) || defined(_X86_)
-	std::cout << "x86" << std::endl;
-#elif defined(__arm__)
-	std::cout << "ARM" << std::endl;
-#else
-	std::cout << "unknown" << std::endl;
-#endif
+	#if defined(__amd64__) || defined(_M_X64)
+		std::cout << "x64" << std::endl;
+	#elif defined(__i386__) || defined(_M_IX86) || defined(_X86_)
+		std::cout << "x86" << std::endl;
+	#elif defined(__arm__)
+		std::cout << "ARM" << std::endl;
+	#else
+		std::cout << "unknown" << std::endl;
+	#endif
 	std::cout << std::endl;
 
 	std::cout << "A server developed by " << STATUS_SERVER_DEVELOPERS << std::endl;
-	std::cout << "Visit our forum for updates, support, and resources: http://othispano.com/." << std::endl;
+	std::cout << "Visit our forum for updates, support, and resources: http://othispano.com/ or visit the discord https://discord.gg/JXapUKMq67." << std::endl;
 	std::cout << std::endl;
 
 	// read global config
