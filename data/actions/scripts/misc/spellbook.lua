@@ -1,9 +1,9 @@
-function onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local count = getPlayerInstantSpellCount(player)
-	local text = ""
+local spellbook = Action()
+
+function spellbook.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	local text = {}
 	local spells = {}
-	for i = 0, count - 1 do
-		local spell = getPlayerInstantSpellInfo(player, i)
+	for _, spell in ipairs(player:getInstantSpells()) do
 		if spell.level ~= 0 then
 			if spell.manapercent > 0 then
 				spell.mana = spell.manapercent .. "%"
@@ -16,17 +16,21 @@ function onUse(player, item, fromPosition, target, toPosition, isHotkey)
 
 	local prevLevel = -1
 	for i, spell in ipairs(spells) do
-		local line = ""
 		if prevLevel ~= spell.level then
-			if i ~= 1 then
-				line = "\n"
+			if i == 1 then
+				text[#text == nil and 1 or #text+1] = "Spells for Level "
+			else
+				text[#text+1] = "\nSpells for Level "
 			end
-			line = line .. "Spells for Level " .. spell.level .. "\n"
+			text[#text+1] = spell.level .. "\n"
 			prevLevel = spell.level
 		end
-		text = text .. line .. "  " .. spell.words .. " - " .. spell.name .. " : " .. spell.mana .. "\n"
+		text[#text+1] = spell.words .. " - " .. spell.name .. " : " .. spell.mana .. "\n"
 	end
 
-	player:showTextDialog(item:getId(), text)
+	player:showTextDialog(item:getId(), table.concat(text))
 	return true
 end
+
+spellbook:id(2175, 6120, 8900, 8901, 8902, 8903, 8904, 8918)
+spellbook:register()
