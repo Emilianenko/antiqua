@@ -27,6 +27,7 @@
 #include "spells.h"
 #include "movement.h"
 #include "globalevent.h"
+#include "revscript.h"
 
 Actions* g_actions = nullptr;
 CreatureEvents* g_creatureEvents = nullptr;
@@ -35,6 +36,7 @@ GlobalEvents* g_globalEvents = nullptr;
 Spells* g_spells = nullptr;
 TalkActions* g_talkActions = nullptr;
 MoveEvents* g_moveEvents = nullptr;
+Scripts* g_libs = nullptr;
 
 extern LuaEnvironment g_luaEnvironment;
 
@@ -47,12 +49,20 @@ ScriptingManager::~ScriptingManager()
 	delete g_chat;
 	delete g_creatureEvents;
 	delete g_globalEvents;
+	delete g_libs;
 }
 
 bool ScriptingManager::loadScriptSystems()
 {
 	if (g_luaEnvironment.loadFile("data/global.lua") == -1) {
 		std::cout << "[Warning - ScriptingManager::loadScriptSystems] Can not load data/global.lua" << std::endl;
+	}
+	
+	g_libs = new Scripts();
+	std::cout << ">> Loading lua libs" << std::endl;
+	if (!g_libs->loadScripts("scripts\\lib", true)) {
+		std::cout << "> ERROR: Unable to load lua libs!" << std::endl;
+		return false;
 	}
 
 	g_chat = new Chat();

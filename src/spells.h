@@ -198,8 +198,8 @@ class InstantSpell : public TalkAction, public Spell
 	public:
 		explicit InstantSpell(LuaScriptInterface* interface) : TalkAction(interface) {}
 
-		bool configureEvent(const pugi::xml_node& node) override;
-		bool loadFunction(const pugi::xml_attribute& attr) override;
+		bool configureEvent(const pugi::xml_node& node);
+		bool loadFunction(const pugi::xml_attribute& attr);
 
 		virtual bool playerCastInstant(Player* player, std::string& param);
 
@@ -253,8 +253,8 @@ class ConjureSpell final : public InstantSpell
 			aggressive = false;
 		}
 
-		bool configureEvent(const pugi::xml_node& node) final;
-		bool loadFunction(const pugi::xml_attribute& attr) final;
+		bool configureEvent(const pugi::xml_node& node);
+		bool loadFunction(const pugi::xml_attribute& attr);
 
 		bool playerCastInstant(Player* player, std::string& param) final;
 
@@ -280,8 +280,8 @@ class RuneSpell final : public Action, public Spell
 	public:
 		explicit RuneSpell(LuaScriptInterface* interface) : Action(interface) {}
 
-		bool configureEvent(const pugi::xml_node& node) final;
-		bool loadFunction(const pugi::xml_attribute& attr) final;
+		bool configureEvent(const pugi::xml_node& node);
+		bool loadFunction(const pugi::xml_attribute& attr);
 
 		ReturnValue canExecuteAction(const Player* player, const Position& toPos) final;
 		bool hasOwnErrorHandler() final {

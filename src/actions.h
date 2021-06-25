@@ -31,7 +31,8 @@ class Action : public Event
 		explicit Action(LuaScriptInterface* interface);
 
 		bool configureEvent(const pugi::xml_node& node) override;
-
+		bool loadFunction(const pugi::xml_attribute& attr, bool isScripted) override;
+		
 		//scripting
 		virtual bool executeUse(Player* player, Item* item, const Position& fromPosition,
 			Thing* target, const Position& toPosition);
@@ -57,6 +58,27 @@ class Action : public Event
 		void setCheckFloor(bool v) {
 			checkFloor = v;
 		}
+		
+		std::vector<uint16_t> getItemIdRange() {
+			return ids;
+		}
+		void addItemId(uint16_t id) {
+			ids.emplace_back(id);
+		}
+
+		std::vector<uint16_t> getUniqueIdRange() {
+			return uids;
+		}
+		void addUniqueId(uint16_t id) {
+			uids.emplace_back(id);
+		}
+
+		std::vector<uint16_t> getActionIdRange() {
+			return aids;
+		}
+		void addActionId(uint16_t id) {
+			aids.emplace_back(id);
+		}
 
 		virtual ReturnValue canExecuteAction(const Player* player, const Position& toPos);
 		virtual bool hasOwnErrorHandler() {
@@ -67,9 +89,12 @@ class Action : public Event
 	protected:
 		std::string getScriptEventName() const override;
 
-		bool allowFarUse;
-		bool checkFloor;
-		bool checkLineOfSight;
+		bool allowFarUse = false;
+		bool checkFloor = true;
+		bool checkLineOfSight = true;
+		std::vector<uint16_t> ids;
+		std::vector<uint16_t> uids;
+		std::vector<uint16_t> aids;
 };
 
 class Actions final : public BaseEvents
@@ -88,6 +113,8 @@ class Actions final : public BaseEvents
 		ReturnValue canUse(const Player* player, const Position& pos);
 		ReturnValue canUse(const Player* player, const Position& pos, const Item* item);
 		ReturnValue canUseFar(const Creature* creature, const Position& toPos, bool checkLineOfSight, bool checkFloor);
+		
+		bool registerLuaEvent(Event* event);
 
 	protected:
 		ReturnValue internalUseItem(Player* player, const Position& pos, uint8_t index, Item* item);

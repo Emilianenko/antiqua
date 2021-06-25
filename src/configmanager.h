@@ -41,7 +41,8 @@ class ConfigManager
 			TELEPORT_NEWBIES,
 			STACK_CUMULATIVES,
 			QUERY_PLAYER_CONTAINERS,
-
+			SCRIPTS_CONSOLE_LOGS,
+			
 			LAST_BOOLEAN_CONFIG /* this must be the last one */
 		};
 

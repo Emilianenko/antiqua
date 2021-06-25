@@ -98,6 +98,36 @@ bool GlobalEvents::registerEvent(Event* event, const pugi::xml_node&)
 	return false;
 }
 
+bool GlobalEvents::registerLuaEvent(Event* event)
+{
+	GlobalEvent* globalEvent = static_cast<GlobalEvent*>(event); //event is guaranteed to be a GlobalEvent
+	if (globalEvent->getEventType() == GLOBALEVENT_TIMER) {
+		auto result = timerMap.emplace(globalEvent->getName(), std::move(*globalEvent));
+		if (result.second) {
+			if (timerEventId == 0) {
+				timerEventId = g_scheduler.addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&GlobalEvents::timer, this)));
+			}
+			return true;
+		}
+	} else if (globalEvent->getEventType() != GLOBALEVENT_NONE) {
+		auto result = serverMap.emplace(globalEvent->getName(), std::move(*globalEvent));
+		if (result.second) {
+			return true;
+		}
+	} else { // think event
+		auto result = thinkMap.emplace(globalEvent->getName(), std::move(*globalEvent));
+		if (result.second) {
+			if (thinkEventId == 0) {
+				thinkEventId = g_scheduler.addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&GlobalEvents::think, this)));
+			}
+			return true;
+		}
+	}
+
+	std::cout << "[Warning - GlobalEvents::configureEvent] Duplicate registered globalevent with name: " << globalEvent->getName() << std::endl;
+	return false;
+}
+
 void GlobalEvents::startup() const
 {
 	execute(GLOBALEVENT_STARTUP);

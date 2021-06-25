@@ -160,6 +160,53 @@ bool Actions::registerEvent(Event* event, const pugi::xml_node& node)
 	return false;
 }
 
+bool Actions::registerLuaEvent(Event* event)
+{
+	Action* action = static_cast<Action*>(event);
+
+	if (action->getItemIdRange().size() > 0) {
+		if (action->getItemIdRange().size() == 1) {
+			auto result = useItemMap.emplace(action->getItemIdRange().at(0), std::move(*action));
+			if (!result.second) {
+				std::cout << "[Warning - Actions::registerLuaEvent] Duplicate registered item with id: " << action->getItemIdRange().at(0) << std::endl;
+			}
+			return result.second;
+		} else {
+			auto v = action->getItemIdRange();
+			for (auto i = v.begin(); i != v.end(); i++) {
+				auto result = useItemMap.emplace(*i, std::move(*action));
+				if (!result.second) {
+					std::cout << "[Warning - Actions::registerLuaEvent] Duplicate registered item with id: " << *i << " in range from id: " << v.at(0) << ", to id: " << v.at(v.size() - 1) << std::endl;
+					continue;
+				}
+			}
+			return true;
+		}
+	}
+	else if (action->getActionIdRange().size() > 0) {
+		if (action->getActionIdRange().size() == 1) {
+			auto result = actionItemMap.emplace(action->getActionIdRange().at(0), std::move(*action));
+			if (!result.second) {
+				std::cout << "[Warning - Actions::registerLuaEvent] Duplicate registered item with aid: " << action->getActionIdRange().at(0) << std::endl;
+			}
+			return result.second;
+		} else {
+			auto v = action->getActionIdRange();
+			for (auto i = v.begin(); i != v.end(); i++) {
+				auto result = actionItemMap.emplace(*i, std::move(*action));
+				if (!result.second) {
+					std::cout << "[Warning - Actions::registerLuaEvent] Duplicate registered item with aid: " << *i << " in range from aid: " << v.at(0) << ", to aid: " << v.at(v.size() - 1) << std::endl;
+					continue;
+				}
+			}
+			return true;
+		}
+	} else {
+		std::cout << "[Warning - Actions::registerLuaEvent] There is no id / aid / uid set for this event" << std::endl;
+		return false;
+	}
+}
+
 ReturnValue Actions::canUse(const Player* player, const Position& pos)
 {
 	if (pos.x != 0xFFFF) {
@@ -378,6 +425,20 @@ bool Action::configureEvent(const pugi::xml_node& node)
 		setCheckFloor(checkFloorAttr.as_bool());
 	}
 
+	return true;
+}
+
+bool Action::loadFunction(const pugi::xml_attribute& attr, bool isScripted)
+{
+	const char* functionName = attr.as_string();
+	if (!isScripted) {
+		std::cout << "[Warning - Action::loadFunction] Function \"" << functionName << "\" does not exist." << std::endl;
+		return false;
+	}
+
+	if (!isScripted) {
+		scripted = false;
+	}
 	return true;
 }
 

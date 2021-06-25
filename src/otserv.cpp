@@ -35,6 +35,7 @@
 #include "databasemanager.h"
 #include "scheduler.h"
 #include "databasetasks.h"
+#include "script.h"
 
 DatabaseTasks g_databaseTasks;
 Dispatcher g_dispatcher;
@@ -44,6 +45,7 @@ Game g_game;
 ConfigManager g_config;
 Monsters g_monsters;
 Vocations g_vocations;
+Scripts g_scripts;
 RSA g_RSA;
 
 std::mutex g_loaderLock;
@@ -215,7 +217,13 @@ void mainLoader(int, char*[], ServiceManager* services)
 		startupErrorMessage("Unable to load monsters!");
 		return;
 	}
-
+	
+	std::cout << ">> Loading lua scripts" << std::endl;
+	if (!g_scripts.loadScripts("scripts", false)) {
+		startupErrorMessage("Failed to load lua scripts");
+		return;
+	}
+	
 	std::cout << ">> Checking world type... " << std::flush;
 	std::string worldType = asLowerCaseString(g_config.getString(ConfigManager::WORLD_TYPE));
 	if (worldType == "pvp") {
