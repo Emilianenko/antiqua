@@ -34,6 +34,7 @@ enum BehaviourSituation_t
 enum NpcBehaviourType_t
 {
 	BEHAVIOUR_TYPE_NOP = 0, // returns true on conditions
+	BEHAVIOUR_TYPE_FULL_DIGIT, // allows MESSAGE_COUNT to support full digits counts (over 500), for bank system
 	BEHAVIOUR_TYPE_STRING, // match string, or NPC say
 	BEHAVIOUR_TYPE_NUMBER, // return a number
 	BEHAVIOUR_TYPE_OPERATION, // <, =, >, >=, <=, <>
@@ -85,6 +86,9 @@ enum NpcBehaviourType_t
 	BEHAVIOUR_TYPE_BLESS, // add blessing to player
 	BEHAVIOUR_TYPE_CREATECONTAINER, // create a container of an item in particular
 	BEHAVIOUR_TYPE_TOWN, // change player town
+	BEHAVIOUR_TYPE_SETMAGICLEVEL, // change player magic level
+	BEHAVIOUR_TYPE_SETLEVEL, // change player level
+	BEHAVIOUR_TYPE_SETSKILL, // change player skills
 };
 
 enum NpcBehaviourOperator_t
@@ -257,11 +261,13 @@ class BehaviourDatabase
 
 		bool checkCondition(const NpcBehaviourCondition* condition, Player* player, const std::string& message);
 		void checkAction(const NpcBehaviourAction* action, Player* player, const std::string& message);
+		bool validateAction(const NpcBehaviourAction* action, Player* player, const std::string& message);
+        void say(const std::string& words);
 
-		int32_t evaluate(NpcBehaviourNode* node, Player* player, const std::string& message = "");
+		int64_t evaluate(NpcBehaviourNode* node, Player* player, const std::string& message = "");
 
-		int32_t checkOperation(Player* player, NpcBehaviourNode* node, const std::string& message);
-		int32_t searchDigit(const std::string& message);
+		int64_t checkOperation(Player* player, NpcBehaviourNode* node, const std::string& message);
+		int64_t searchDigit(const std::string& message);
 		bool searchWord(const std::string& pattern, const std::string& message);
 
 		std::string parseResponse(Player* player, const std::string& message);
@@ -270,13 +276,14 @@ class BehaviourDatabase
 		void idle();
 		void reset();
 
-		int32_t topic;
-		int32_t data;
-		int32_t type;
-		int32_t price;
-		int32_t amount;
+		std::unordered_map<uint64_t, int64_t> topic;
+		std::unordered_map<uint64_t, int64_t> data;
+		std::unordered_map<uint64_t, int64_t> type;
+		std::unordered_map<uint64_t, int64_t> price;
+		std::unordered_map<uint64_t, int64_t> amount;
 		int32_t delay;
 
+		bool full_digit = false;
 		std::string string;
 
 		Npc* npc = nullptr;

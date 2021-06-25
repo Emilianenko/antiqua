@@ -70,6 +70,9 @@ enum ShootType_t : uint8_t {
 	CONST_ANI_SNOWBALL = 13,
 	CONST_ANI_POWERBOLT = 14,
 	CONST_ANI_POISON = 15,
+	
+	// for internal use, don't send to client
+	CONST_ANI_WEAPONTYPE = 0xFE, // 254
 };
 
 enum SpeakClasses : uint8_t {

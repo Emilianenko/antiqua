@@ -24,6 +24,7 @@
 #include "game.h"
 #include "configmanager.h"
 #include "monster.h"
+#include "const.h"
 
 extern Game g_game;
 extern ConfigManager g_config;
@@ -644,7 +645,7 @@ void Combat::CombatFunc(Creature* caster, const Position& pos, const AreaCombat*
 			}
 
 			if (CreatureVector* creatures = tile->getCreatures()) {
-				const Creature* topCreature = tile->getTopCreature();
+				const Creature* topCreature = tile->getBottomCreature();
 				for (Creature* creature : *creatures) {
 					if (params.targetCasterOrTopMost) {
 						if (caster && caster->getTile() == tile) {
@@ -722,7 +723,7 @@ void Combat::CombatFunc(Creature* caster, const Position& pos, const AreaCombat*
 		}
 
 		if (CreatureVector* creatures = tile->getCreatures()) {
-			const Creature* topCreature = tile->getTopCreature();
+			const Creature* topCreature = tile->getBottomCreature();
 			for (Creature* creature : *creatures) {
 				if (params.targetCasterOrTopMost) {
 					if (caster && caster->getTile() == tile) {
@@ -997,6 +998,7 @@ bool Combat::rangeAttack(Creature* attacker, Creature* target, fightMode_t fight
 			specialEffect = weapon->getWeaponSpecialEffect();
 			attackStrength = weapon->getAttackStrength();
 			attackVariation = weapon->getAttackVariation();
+			
 			if (weapon->getFragility()) {
 				if (normal_random(0, 99) <= weapon->getFragility()) {
 					uint16_t count = weapon->getItemCount();
@@ -1016,6 +1018,7 @@ bool Combat::rangeAttack(Creature* attacker, Creature* target, fightMode_t fight
 			specialEffect = ammunition->getWeaponSpecialEffect();
 			attackStrength = ammunition->getAttackStrength();
 			attackVariation = ammunition->getAttackVariation();
+			
 			if (normal_random(0, 100) <= ammunition->getFragility()) {
 				uint16_t count = ammunition->getItemCount();
 				if (count > 1) {
@@ -1037,7 +1040,9 @@ bool Combat::rangeAttack(Creature* attacker, Creature* target, fightMode_t fight
 
 		bool hit = false;
 
-		if (rand() % distance <= skillValue) {
+		if (hitChance == 100) {
+			hit = true;
+		} else if (rand() % distance <= skillValue) {
 			hit = rand() % 100 <= hitChance;
 		}
 
@@ -1223,6 +1228,10 @@ void Combat::getAttackValue(Creature* creature, uint32_t& attackValue, uint32_t&
 			}
 
 			skillValue = player->getSkillLevel(skill);
+			
+			if (weapon->getMinimumLevel() > player->getLevel()) {
+				attackValue = std::max<uint32_t>(7, attackValue / 2);
+			}
 		} else {
 			attackValue = 7;
 			skillValue = player->getSkillLevel(skill);
@@ -1239,7 +1248,7 @@ bool Combat::canUseWeapon(Player* player, Item* weapon)
 		return true;
 	}
 
-	if (player->getLevel() < weapon->getMinimumLevel()) {
+	if (weapon->getWeaponType() == WEAPON_WAND && player->getLevel() < weapon->getMinimumLevel()) {
 		return false;
 	}
 
@@ -1587,7 +1596,7 @@ void AreaCombat::getList(const Position& centerPos, const Position& targetPos, s
 	for (uint32_t y = 0, rows = area->getRows(); y < rows; ++y) {
 		for (uint32_t x = 0; x < cols; ++x) {
 			if (area->getValue(y, x) != 0) {
-				if (g_game.isSightClear(targetPos, tmpPos, true)) {
+				if (g_game.isSightClear(targetPos, tmpPos, true, MAPPATH_RUNE)) {
 					Tile* tile = g_game.map.getTile(tmpPos);
 					if (!tile) {
 						tile = new StaticTile(tmpPos.x, tmpPos.y, tmpPos.z);

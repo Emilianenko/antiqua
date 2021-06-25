@@ -100,6 +100,8 @@ bool ConfigManager::load()
 	integer[BAN_LENGTH] = getGlobalNumber(L, "banLength", 30 * 24 * 60 * 60);
 	integer[ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenActions", 200);
 	integer[EX_ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenExActions", 1000);
+	integer[ITEM_ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenItemActions", 50);
+	integer[ITEM_EX_ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenItemExActions", 200);
 	integer[MAX_MESSAGEBUFFER] = getGlobalNumber(L, "maxMessageBuffer", 4);
 	integer[KICK_AFTER_MINUTES] = getGlobalNumber(L, "kickIdlePlayerAfterMinutes", 15);
 	integer[PROTECTION_LEVEL] = getGlobalNumber(L, "protectionLevel", 1);

@@ -106,6 +106,13 @@ class Monster final : public Creature
 		}
 
 		bool canPushItems() const {
+			// allows summons to push items if their master is able to
+			if (isSummon()) {
+				if (Monster* monster = master->getMonster()) {
+					return monster->mType->info.canPushItems;
+				}
+			}
+			
 			return mType->info.canPushItems;
 		}
 		bool canPushCreatures() const {

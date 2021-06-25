@@ -1180,7 +1180,8 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CONST_ANI_SNOWBALL)
 	registerEnum(CONST_ANI_POWERBOLT)
 	registerEnum(CONST_ANI_POISON)
-
+	registerEnum(CONST_ANI_WEAPONTYPE)
+	
 	registerEnum(CONST_PROP_BLOCKSOLID)
 	registerEnum(CONST_PROP_HASHEIGHT)
 	registerEnum(CONST_PROP_BLOCKPROJECTILE)

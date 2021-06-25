@@ -1811,11 +1811,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage& msg)
 	msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint16_t>(static_cast<uint16_t>(player->getFreeCapacity() / 100.));
-	if (player->getExperience() >= std::numeric_limits<uint32_t>::max()) {
-		msg.add<uint32_t>(0);
-	} else {
-		msg.add<uint32_t>(static_cast<uint32_t>(player->getExperience()));
-	}
+	msg.add<uint32_t>(static_cast<uint32_t>(player->getExperience()));
 	msg.add<uint16_t>(static_cast<uint16_t>(player->getLevel()));
 	msg.addByte(player->getLevelPercent());
 	msg.add<uint16_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));

@@ -536,6 +536,24 @@ bool Player::canSee(const Position& pos) const
 	return client->canSee(pos);
 }
 
+bool Player::canWalkthrough(const Creature* creature) const
+{
+	if (group->access || creature->isInGhostMode()) {
+		return true;
+	}
+
+	return false;
+}
+
+bool Player::canWalkthroughEx(const Creature* creature) const
+{
+	if (creature->isInGhostMode() || !group->access) {
+		return true;
+	}
+
+	return false;
+}
+
 bool Player::canSeeCreature(const Creature* creature) const
 {
 	if (creature == this) {

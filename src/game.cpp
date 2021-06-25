@@ -229,7 +229,7 @@ Thing* Game::internalGetThing(Player* player, const Position& pos, int32_t index
 			}
 
 			case STACKPOS_USETARGET: {
-				thing = tile->getTopCreature();
+				thing = tile->getBottomCreature();
 				if (!thing) {
 					thing = tile->getUseItem();
 				}
@@ -959,7 +959,7 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 		return;
 	}
 
-	if (!canThrowObjectTo(mapFromPos, mapToPos)) {
+	if (!canThrowObjectTo(mapFromPos, mapToPos, true, Map::maxClientViewportX, Map::maxClientViewportY, MAPPATH_ITEM)) {
 		player->sendCancelMessage(RETURNVALUE_CANNOTTHROW);
 		return;
 	}
@@ -3075,14 +3075,15 @@ bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string& r
 
 //--
 bool Game::canThrowObjectTo(const Position& fromPos, const Position& toPos, bool checkLineOfSight /*= true*/,
-                            int32_t rangex /*= Map::maxClientViewportX*/, int32_t rangey /*= Map::maxClientViewportY*/) const
+	int32_t rangex /*= Map::maxClientViewportX*/, int32_t rangey /*= Map::maxClientViewportY*/,
+	MapPathFinding_t path/*= MAPPATH_NONE*/) const
 {
-	return map.canThrowObjectTo(fromPos, toPos, checkLineOfSight, rangex, rangey);
+	return map.canThrowObjectTo(fromPos, toPos, checkLineOfSight, rangex, rangey, path);
 }
 
-bool Game::isSightClear(const Position& fromPos, const Position& toPos, bool floorCheck) const
+bool Game::isSightClear(const Position& fromPos, const Position& toPos, bool floorCheck, MapPathFinding_t path/*= MAPPATH_NONE*/) const
 {
-	return map.isSightClear(fromPos, toPos, floorCheck);
+	return map.isSightClear(fromPos, toPos, floorCheck, path);
 }
 
 bool Game::internalCreatureTurn(Creature* creature, Direction dir)
@@ -3395,7 +3396,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 	}
 }
 
-bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage& damage)
+bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage& damage, bool field)
 {
 	const Position& targetPos = target->getPosition();
 	if (damage.value > 0) {
@@ -3456,6 +3457,19 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 					std::stringstream ss;
 					if (!attacker) {
 						ss << "You lose " << damageString << " mana.";
+					} else if (targetPlayer == attackerPlayer && field) {
+						if (damage.type == COMBAT_EARTHDAMAGE) {
+							ss << "You lose " << damageString << " mana due to poison.";
+						}
+						else if (damage.type == COMBAT_FIREDAMAGE) {
+							ss << "You lose " << damageString << " mana due to fire.";
+						}
+						else if (damage.type == COMBAT_ENERGYDAMAGE) {
+							ss << "You lose " << damageString << " mana due to energy.";
+						}
+						else {
+							ss << "You lose " << damageString << " mana.";
+						}
 					} else if (targetPlayer == attackerPlayer) {
 						ss << "You lose " << damageString << " mana due to your own attack.";
 					} else {

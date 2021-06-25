@@ -21,7 +21,7 @@ function onUse(player, item, fromPosition, target, toPosition)
 	if table.contains(ropeSpots, tile:getGround():getId()) then
 		player:teleportTo(target:getPosition():moveRel(0, 1, -1))
 		return true
-	elseif table.contains(holeSpots, tile:getGround():getId()) or target:getId() == 435 then
+	elseif table.contains(holeSpots, target:getId()) or target:getId() == 435 then
 		local tile = Tile(target:getPosition():moveRel(0, 0, 1))
 		if not tile then
 			return false

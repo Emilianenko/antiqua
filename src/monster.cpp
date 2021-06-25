@@ -108,7 +108,7 @@ int32_t Monster::getDefense()
 
 bool Monster::canSee(const Position& pos) const
 {
-	return Creature::canSee(getPosition(), pos, 9, 9);
+	return Creature::canSee(getPosition(), pos, 9, 9) && getPosition().z == pos.z;
 }
 
 void Monster::onAttackedCreature(Creature* creature)
@@ -269,7 +269,7 @@ void Monster::onCreatureMove(Creature* creature, const Tile* newTile, const Posi
 
 					Tile* tile = g_game.map.getTile(checkPosition);
 					if (tile) {
-						Creature* topCreature = tile->getTopCreature();
+						Creature* topCreature = tile->getBottomCreature();
 						if (topCreature && followCreature != topCreature && isOpponent(topCreature)) {
 							selectTarget(topCreature);
 						}
@@ -694,6 +694,10 @@ bool Monster::isTarget(const Creature* creature) const
 		return false;
 	}
 
+	if (creature->getPosition().z != getPosition().z) {
+		return false;
+	}
+	
 	if (creature->getPosition().z != getPosition().z) {
 		return false;
 	}
