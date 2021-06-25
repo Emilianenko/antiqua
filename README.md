@@ -14,6 +14,11 @@ Antiqua is a 7.7 clone project that has been in development for a long time, it 
   - Fixes for the spells sightline
   - canWalkthrough fixes
 
+# Future features/To do
+  - Revscripts system
+  - Events
+  - Autobackpack reopening (enabled by config)
+
 # Credits
   - OpenTibia community
   - Our contributors
