@@ -27,10 +27,12 @@
 #include "spells.h"
 #include "movement.h"
 #include "globalevent.h"
+#include "events.h"
 
 Actions* g_actions = nullptr;
 CreatureEvents* g_creatureEvents = nullptr;
 Chat* g_chat = nullptr;
+Events* g_events = nullptr;
 GlobalEvents* g_globalEvents = nullptr;
 Spells* g_spells = nullptr;
 TalkActions* g_talkActions = nullptr;
@@ -40,6 +42,7 @@ extern LuaEnvironment g_luaEnvironment;
 
 ScriptingManager::~ScriptingManager()
 {
+	delete g_events;
 	delete g_spells;
 	delete g_actions;
 	delete g_talkActions;
@@ -93,5 +96,11 @@ bool ScriptingManager::loadScriptSystems()
 		return false;
 	}
 
+	g_events = new Events();
+	if (!g_events->load()) {
+		std::cout << "> ERROR: Unable to load events!" << std::endl;
+		return false;
+	}
+	
 	return true;
 }
