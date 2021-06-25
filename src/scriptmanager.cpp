@@ -27,7 +27,6 @@
 #include "spells.h"
 #include "movement.h"
 #include "globalevent.h"
-#include "script.h"
 
 Actions* g_actions = nullptr;
 CreatureEvents* g_creatureEvents = nullptr;
