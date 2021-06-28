@@ -22,7 +22,9 @@ Antiqua is a 7.7 clone project that has been in development for a long time, it 
 # Fast way for support or contact
   - http://othispano.com (Official spanish community for support)
   - https://discord.gg/2uNeFmmMRW (Official discord in english for support)
+  - OTCv8 community for help/support about the client: https://discord.gg/xx6tdYXfPP
 
 # Credits
   - OpenTibia community
   - Our contributors
+  - OTCv8 Staff (for the client)
