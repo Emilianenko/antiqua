@@ -20,8 +20,8 @@ Antiqua is a 7.7 clone project that has been in development for a long time, it 
   - Autobackpack reopening (enabled by config)
 
 # Fast way for support or contact
-  - http://othispano.com
-  - https://discord.gg/2uNeFmmMRW
+  - http://othispano.com (Official spanish community for support)
+  - https://discord.gg/2uNeFmmMRW (Official discord in english for support)
 
 # Credits
   - OpenTibia community
